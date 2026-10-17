@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pondok Pesantren — Penerimaan Santri Baru</title>
+<meta name="description" content="Profil, program, fasilitas, prestasi, dan pendaftaran santri baru online.">
+<meta name="theme-color" content="#14532D">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2314532D'/%3E%3Cpath d='M16 6l3 7 7 1-5 5 1 7-6-4-6 4 1-7-5-5 7-1z' fill='%23D9A441'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://script.google.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="css/app.css">
+<script>/* cegah kedip tema */try{var m=localStorage.getItem('pp:mode');if(m==='gelap'||(!m&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')}catch(e){}</script>
+</head>
+<body>
+<a href="#utama" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] btn btn-primary">Lewati ke konten</a>
+<header id="top" class="fixed top-0 inset-x-0 z-50 glass !rounded-none border-x-0 border-t-0">
+  <div class="wrap h-[68px] flex items-center justify-between gap-3">
+    <a href="#/" data-go="beranda" class="flex items-center gap-2.5 min-w-0" aria-label="Beranda">
+      <span class="w-10 h-10 rounded-xl bg-brand text-on-brand grid place-items-center shrink-0" id="logo-i"></span>
+      <span class="font-extrabold text-brand dark:text-sec text-base sm:text-lg truncate" id="nama-app">Pondok Pesantren</span>
+    </a>
+    <nav id="nav" class="hidden xl:flex items-center gap-1" aria-label="Navigasi utama"></nav>
+    <div class="flex items-center gap-2">
+      <button id="tema" class="btn-icon" aria-label="Ganti mode terang/gelap" title="Mode terang/gelap"></button>
+      <a href="#/daftar" class="btn btn-primary hidden sm:inline-flex" id="cta-top">Daftar Sekarang</a>
+      <button id="burger" class="btn-icon xl:hidden" aria-label="Buka menu" aria-expanded="false"></button>
+    </div>
+  </div>
+  <div id="mnav" class="xl:hidden hidden border-t border-line/50 pb-4"><div class="wrap grid grid-cols-2 gap-2 pt-3" id="mnav-in"></div></div>
+</header>
+<main id="utama" class="pt-[68px] min-h-screen">
+  <div id="v-home" class="view"><div id="home-in">
+    <div class="h-[560px] bg-brand-deep grid place-items-center"><div class="wrap w-full"><div class="skel !bg-white/10 h-10 w-2/3 mb-4"></div><div class="skel !bg-white/10 h-5 w-1/2 mb-8"></div><div class="skel !bg-white/10 h-12 w-48"></div></div></div>
+  </div></div>
+  <div id="v-daftar" hidden></div>
+  <div id="v-status" hidden></div>
+  <div id="v-berita" hidden></div>
+</main>
+<footer id="foot"></footer>
+<a id="fab-wa" hidden target="_blank" rel="noopener noreferrer" aria-label="Chat WhatsApp" class="fixed bottom-5 right-5 z-40 w-14 h-14 rounded-full bg-[#25D366] text-white grid place-items-center shadow-lift hover:scale-105 active:scale-95 transition-transform no-print"></a>
+<script src="js/config.js" defer></script>
+<script src="js/icons.js" defer></script>
+<script src="js/core.js" defer></script>
+<script src="js/public.js" defer></script>
+</body>
+</html>
