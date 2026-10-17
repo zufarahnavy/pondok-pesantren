@@ -83,7 +83,7 @@
     $('#sd-ic').innerHTML = I('moon-star', '!w-6 !h-6'); $('#u-nama').textContent = u.nama || u.email; $('#u-peran').textContent = u.peran; $('#avatar').textContent = String(u.nama || u.email || 'A').charAt(0).toUpperCase();
     $('#menu').innerHTML = menuHtml(); $('#lnk-publik').innerHTML = I('external-link') + 'Lihat situs publik'; $('#btn-keluar').innerHTML = I('log-out') + 'Keluar'; $('#burger').innerHTML = I('menu');
     var tm = $('#tema'); function ik() { tm.innerHTML = I(document.documentElement.classList.contains('dark') ? 'sun' : 'moon'); } ik();
-    tm.onclick = function () { P.setMode(document.documentElement.classList.contains('dark') ? 'terang' : 'gelap', true); ik(); };
+    tm.onclick = function () { P.gantiTema(tm, ik); };
     tampilkanChip(b.dashboard, u); route();
     // prefetch ringan di waktu senggang
     (w.requestIdleCallback || setTimeout)(function () { if (ADM.can('pendaftar')) P.swr('pendaftar:p1:', function () { return ADM.call('pendaftar.list', { hal: 1, per: 25 }); }, null, 120000).catch(function () { }); }, 1500);

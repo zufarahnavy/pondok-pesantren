@@ -17,7 +17,7 @@
   function foto(u, fallback) { u = String(u || ''); return /^https?:\/\//i.test(u) ? u : (fallback || ''); }
   function safeUrl(u) { u = String(u || ''); return /^(https?:|mailto:|tel:|#)/i.test(u) ? u : '#'; }
   /** URL gambar Drive → bentuk yang bisa ditampilkan */
-  function gambar(u) { u = String(u || '').trim(); var m = u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=view&)?id=)([\w-]+)/); return m ? 'https://lh3.googleusercontent.com/d/' + m[1] + '=w1200' : (/^https?:\/\//i.test(u) ? u : ''); }
+  function gambar(u) { u = String(u || '').trim(); if (/^img\/[\w.\-\/]+$/.test(u)) return u; var m = u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=view&)?id=)([\w-]+)/); return m ? 'https://lh3.googleusercontent.com/d/' + m[1] + '=w1200' : (/^https?:\/\//i.test(u) ? u : ''); }
 
   // ---------- Perf ----------
   var Perf = { log: [], push: function (a, total, server) { this.log.push({ a: a, total: total, server: server }); if (this.log.length > 60) this.log.shift(); },
@@ -119,15 +119,25 @@
   function hex2rgb(h) { var m = /^#?([0-9a-f]{6})$/i.exec(h || ''); if (!m) return null; var n = parseInt(m[1], 16); return (n >> 16 & 255) + ' ' + (n >> 8 & 255) + ' ' + (n & 255); }
   function lum(h) { var m = /^#?([0-9a-f]{6})$/i.exec(h || ''); if (!m) return 0; var n = parseInt(m[1], 16), c = [n >> 16 & 255, n >> 8 & 255, n & 255].map(function (v) { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; }
   function terapkanTema(s) {
-    if (!s) return; var r = d.documentElement.style;
+    if (!s) return; var r = d.documentElement.style, gelap = d.documentElement.classList.contains('dark');
     var map = { warna_primer: '--brand', warna_sekunder: '--sec', warna_aksen: '--gold' };
-    Object.keys(map).forEach(function (k) { var v = hex2rgb(s[k]); if (v && !(k === 'warna_primer' && d.documentElement.classList.contains('dark'))) r.setProperty(map[k], v); });
+    Object.keys(map).forEach(function (k) { var v = hex2rgb(s[k]); if (k === 'warna_primer' && gelap) { r.removeProperty('--brand'); return; } if (v) r.setProperty(map[k], v); });
     if (hex2rgb(s.warna_primer)) { r.setProperty('--on-brand', lum(s.warna_primer) > .45 ? '16 30 24' : '255 255 255'); }
     if (s.radius) r.setProperty('--radius', Math.max(8, Math.min(32, +s.radius || 20)) + 'px');
     if (s.glass_blur) r.setProperty('--glass-blur', Math.max(0, Math.min(40, +s.glass_blur || 18)) + 'px');
     if (s.glass_opacity) r.setProperty('--glass-op', (Math.max(30, Math.min(100, +s.glass_opacity || 72)) / 100).toFixed(2));
   }
   function modeAktif(def) { var o = LS.getItem('pp:mode'); if (o === 'terang' || o === 'gelap') return o; if (def === 'terang' || def === 'gelap') return def; return w.matchMedia && w.matchMedia('(prefers-color-scheme:dark)').matches ? 'gelap' : 'terang'; }
+  function gantiTema(btn, sesudah) {
+    var gelapSekarang = d.documentElement.classList.contains('dark'), baru = gelapSekarang ? 'terang' : 'gelap', h = d.documentElement;
+    var jalan = function () { setMode(baru, true); if (sesudah) sesudah(); };
+    if (w.matchMedia && w.matchMedia('(prefers-reduced-motion:reduce)').matches) return jalan();
+    if (d.startViewTransition) {
+      var r = btn ? btn.getBoundingClientRect() : { left: w.innerWidth / 2, top: 0, width: 0, height: 0 }, x = r.left + r.width / 2, y = r.top + r.height / 2, rad = Math.hypot(Math.max(x, w.innerWidth - x), Math.max(y, w.innerHeight - y));
+      var t = d.startViewTransition(jalan);
+      t.ready.then(function () { h.animate({ clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + rad + 'px at ' + x + 'px ' + y + 'px)'] }, { duration: 650, easing: 'cubic-bezier(.4,0,.2,1)', pseudoElement: '::view-transition-new(root)' }); }, function () { });
+    } else { h.classList.add('theme-anim'); jalan(); setTimeout(function () { h.classList.remove('theme-anim'); }, 700); }
+  }
   function setMode(m, simpan) { d.documentElement.classList.toggle('dark', m === 'gelap'); if (simpan) LS.setItem('pp:mode', m); var meta = $('meta[name=theme-color]'); if (meta) meta.content = m === 'gelap' ? '#08140F' : '#14532D'; }
   (function awal() { var o = LS.getItem('pp:mode'); setMode(o === 'gelap' || (!o && w.matchMedia && w.matchMedia('(prefers-color-scheme:dark)').matches) ? 'gelap' : 'terang'); })();
 
@@ -138,5 +148,5 @@
   }
 
   w.PP = { $: $, $$: $$, esc: esc, icon: icon, rupiah: rupiah, tgl: tgl, jam: jam, debounce: debounce, uid: uid, foto: foto, gambar: gambar, safeUrl: safeUrl, Perf: Perf, Sesi: Sesi, Cache: Cache, swr: swr,
-    api: api, apiBatch: apiBatch, warm: warm, onAuthExpired: onAuthExpired, toast: toast, modal: modal, konfirmasi: konfirmasi, sibuk: sibuk, terapkanTema: terapkanTema, modeAktif: modeAktif, setMode: setMode, pantauKoneksi: pantauKoneksi, LS: LS };
+    api: api, apiBatch: apiBatch, warm: warm, onAuthExpired: onAuthExpired, toast: toast, modal: modal, konfirmasi: konfirmasi, sibuk: sibuk, terapkanTema: terapkanTema, modeAktif: modeAktif, setMode: setMode, gantiTema: gantiTema, pantauKoneksi: pantauKoneksi, LS: LS };
 })(window);
